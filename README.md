@@ -7,6 +7,9 @@ CodeQL against the app source.
 Constraints use a small DSL: `P(w(cartCount) | A(addBtn)) = 1` means
 clicking `addBtn` always writes `cartCount`.
 
+<img width="649" height="335" alt="flowcheck-image" src="https://github.com/user-attachments/assets/f6fa2d6d-f545-47da-b51f-2103a200d92c" />
+
+
 ## Requirements
 
 - Python 3.10+
