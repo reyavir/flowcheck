@@ -65,22 +65,23 @@
   <!-- Input card -->
   <div class="card">
     <div class="card-title">Constraint</div>
+    <p class="parser-note">
+      It’s usually easier to pick action and targets in the
+      <button type="button" class="hint-link" id="go-to-builder-btn">Visual Builder</button>.
+      You can also write the constraint language here if you want.
+      Click an id below to insert it.
+    </p>
 
     <div class="input-row">
       <input
         id="constraint-input"
         class="constraint-input"
         type="text"
-        placeholder='e.g. P(w(cartDisplay) | A(addBtn)) = 1'
+        placeholder='e.g. P(w(id) | A(id)) = 1'
         autocomplete="off"
         spellcheck="false"
       />
       <button id="parse-btn" class="btn-parse">Parse</button>
-    </div>
-
-    <div style="margin-top:1rem;">
-      <div class="examples-label">Quick examples — click to fill:</div>
-      <div id="examples-container" class="examples"></div>
     </div>
 
     <!-- Element reference -->
@@ -97,9 +98,11 @@
     </div>
 
     <div id="no-mapping-hint" class="no-mapping-hint hidden">
-      No element mapping yet —
-      <button class="hint-link" id="go-to-mapping-btn">generate one in the Element Mapping tab</button>
-      before writing constraints.
+      No elements yet. Add your app on
+      <button type="button" class="hint-link" id="go-to-mapping-btn">Element Mapping</button>
+      and finish <strong>steps 1–2</strong> (inject IDs, then refresh the element list)
+      to see ids scraped from the source. <strong>Step 3</strong> (CodeQL database)
+      is for static checks, not for this list.
     </div>
   </div>
 

@@ -11,13 +11,22 @@ async function loadElementReference() {
     const refApis       = document.getElementById("ref-apis");
     const refApisRow    = document.getElementById("ref-apis-row");
 
-    if (!data.available) {
+    const elements = (data.available && data.elements) ? data.elements : [];
+    const apis     = (data.available && data.apis)     ? data.apis     : [];
+
+    if (elements.length === 0 && apis.length === 0) {
+      refPanel.classList.add("hidden");
+      refElements.innerHTML = "";
+      refApis.innerHTML = "";
+      refApisRow.classList.add("hidden");
       noMappingHint.classList.remove("hidden");
       return;
     }
 
+    noMappingHint.classList.add("hidden");
+
     // Elements chips — id is the canonical handle, label shown for humans.
-    refElements.innerHTML = data.elements.map(e => {
+    refElements.innerHTML = elements.map(e => {
       const text = e.label && e.label !== e.id ? `${e.id} (${e.label})` : e.id;
       return `<button class="ref-chip ref-chip-element"
                        data-insert="${escapeAttr(e.id)}"
@@ -25,14 +34,17 @@ async function loadElementReference() {
     }).join("");
 
     // API chips
-    if (data.apis.length) {
-      refApis.innerHTML = data.apis.map(a => {
+    if (apis.length) {
+      refApis.innerHTML = apis.map(a => {
         const text = a.label && a.label !== a.id ? `${a.id} (${a.label})` : a.id;
         return `<button class="ref-chip ref-chip-api"
                          data-insert="${escapeAttr(a.id)}"
                          title="${escapeAttr(a.label || '')}">${escapeHtml(text)}</button>`;
       }).join("");
       refApisRow.classList.remove("hidden");
+    } else {
+      refApis.innerHTML = "";
+      refApisRow.classList.add("hidden");
     }
 
     refPanel.classList.remove("hidden");
@@ -51,24 +63,14 @@ async function loadElementReference() {
     });
 
   } catch {
-    // silently ignore — reference panel is a nice-to-have
+    const refPanel      = document.getElementById("element-ref");
+    const noMappingHint = document.getElementById("no-mapping-hint");
+    if (refPanel) refPanel.classList.add("hidden");
+    if (noMappingHint) noMappingHint.classList.remove("hidden");
   }
 }
 
 loadElementReference();
-
-/* ── State ────────────────────────────────────────────────────────────── */
-const EXAMPLES = [
-  "P(w(cartDisplay) | A(addBtn)) = 1",
-  "P(w(cartDisplay, r(cartDisplay) + 1) | A(addBtn)) = 1",
-  "P(w(cartDisplay) | ¬A(addBtn)) = 0",
-  "P(call(cartApi) | A(addBtn)) = 1",
-  "P(w(a) ∧ w(b) | A(submitBtn)) = 1",
-  "P(w(a) XOR w(b) | A(toggleBtn)) = 1",
-  "P(seq(w(spinner)) < seq(w(results)) | A(searchBtn)) = 1",
-  "no_literal(priceDisplay)",
-  "hidden_error()",
-];
 
 /* ── DOM refs ─────────────────────────────────────────────────────────── */
 const input          = document.getElementById("constraint-input");
@@ -87,18 +89,6 @@ const verifyNInput   = document.getElementById("verify-n-input");
 const verifyResult   = document.getElementById("verify-result");
 
 /* ── Bootstrap ────────────────────────────────────────────────────────── */
-document.getElementById("examples-container").innerHTML =
-  EXAMPLES.map(ex =>
-    `<button class="example-btn" data-ex="${escapeAttr(ex)}">${escapeHtml(ex)}</button>`
-  ).join("");
-
-document.querySelectorAll(".example-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    input.value = btn.dataset.ex;
-    input.focus();
-  });
-});
-
 parseBtn.addEventListener("click", runParse);
 input.addEventListener("keydown", e => { if (e.key === "Enter") runParse(); });
 

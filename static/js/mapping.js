@@ -15,6 +15,9 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
 document.getElementById("go-to-mapping-btn")?.addEventListener("click", () => {
   switchTab("mapping");
 });
+document.getElementById("go-to-builder-btn")?.addEventListener("click", () => {
+  switchTab("builder");
+});
 
 /* ── Setup checklist ─────────────────────────────────────────────────── */
 
