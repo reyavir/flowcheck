@@ -42,7 +42,7 @@
   const PANEL_ID    = '__constraint_builder_panel';
   const STYLE_ID    = '__constraint_builder_styles';
   const STORAGE_KEY = '__constraint_builder_saved';
-  const HL_COLOR    = '#4A90E2';
+  const HL_COLOR    = '#0f766e';
   const LABEL_MAX   = 25;
 
   // ── State ─────────────────────────────────────────────────────────────
@@ -144,14 +144,14 @@
         right: 16px;
         width: 340px;
         max-height: calc(100vh - 32px);
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        box-shadow: 0 10px 32px rgba(15,23,42,0.18);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+        background: #fbfaf7;
+        border: 1px solid #ddd8d0;
+        border-radius: 6px;
+        box-shadow: 0 10px 28px rgba(28,25,23,0.14);
+        font-family: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
         font-size: 13px;
         line-height: 1.45;
-        color: #1e293b;
+        color: #1c1917;
         z-index: 999999;
         display: flex;
         flex-direction: column;
@@ -159,10 +159,10 @@
       #${PANEL_ID} * { box-sizing: border-box; }
 
       #${PANEL_ID} .__cb_header {
-        background: ${HL_COLOR};
-        color: #fff;
+        background: #134e4a;
+        color: #f5f4f1;
         padding: 8px 12px;
-        border-radius: 7px 7px 0 0;
+        border-radius: 5px 5px 0 0;
         cursor: move;
         display: flex;
         align-items: center;
@@ -181,23 +181,23 @@
 
       #${PANEL_ID} .__cb_tabs {
         display: flex;
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid #ddd8d0;
       }
       #${PANEL_ID} .__cb_tabs button {
         flex: 1;
         padding: 8px 10px;
-        background: #f8fafc;
+        background: #f0eeea;
         border: none;
-        border-right: 1px solid #e2e8f0;
+        border-right: 1px solid #ddd8d0;
         cursor: pointer;
         font: inherit;
-        color: #475569;
+        color: #6b6560;
         font-weight: 500;
       }
       #${PANEL_ID} .__cb_tabs button:last-child { border-right: none; }
       #${PANEL_ID} .__cb_tabs button._active {
-        background: #ffffff;
-        color: #1e293b;
+        background: #fbfaf7;
+        color: #1c1917;
         font-weight: 600;
         box-shadow: inset 0 -2px 0 ${HL_COLOR};
       }
@@ -212,7 +212,7 @@
         font-weight: 700;
         letter-spacing: .07em;
         text-transform: uppercase;
-        color: #64748b;
+        color: #6b6560;
         margin: 0 0 6px 0;
       }
       #${PANEL_ID} .__cb_section { margin-bottom: 14px; }
@@ -223,8 +223,8 @@
         justify-content: space-between;
         gap: 6px;
         padding: 6px 8px;
-        background: #f1f5f9;
-        border: 1px solid #cbd5e1;
+        background: #f0eeea;
+        border: 1px solid #ddd8d0;
         border-radius: 5px;
         margin-bottom: 4px;
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -233,7 +233,7 @@
       }
       #${PANEL_ID} .__cb_chip ._remove {
         cursor: pointer;
-        color: #94a3b8;
+        color: #a8a29e;
         font-weight: 700;
         padding: 0 4px;
         flex-shrink: 0;
@@ -253,20 +253,20 @@
         gap: 4px;
         margin-left: 12px;
         font-size: 11px;
-        color: #475569;
+        color: #57534e;
       }
       #${PANEL_ID} .__cb_value_row::before {
         content: "↳";
-        color: #94a3b8;
+        color: #a8a29e;
         margin-right: 2px;
       }
-      #${PANEL_ID} .__cb_value_row_api { font-style: italic; color: #94a3b8; }
-      #${PANEL_ID} .__cb_value_label { color: #64748b; }
+      #${PANEL_ID} .__cb_value_row_api { font-style: italic; color: #a8a29e; }
+      #${PANEL_ID} .__cb_value_label { color: #6b6560; }
       #${PANEL_ID} .__cb_value_source {
         font: inherit;
         font-size: 11px;
-        background: #fff;
-        border: 1px solid #cbd5e1;
+        background: #fbfaf7;
+        border: 1px solid #ddd8d0;
         border-radius: 4px;
         padding: 1px 4px;
         cursor: pointer;
@@ -277,7 +277,7 @@
         font: inherit;
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-size: 11px;
-        border: 1px solid #cbd5e1;
+        border: 1px solid #ddd8d0;
         border-radius: 4px;
         padding: 1px 5px;
         min-width: 110px;
@@ -294,7 +294,7 @@
         content: "";
         display: inline-block;
         width: 10px;
-        border-top: 1px dashed #cbd5e1;
+        border-top: 1px dashed #ddd8d0;
         margin-right: 6px;
       }
       #${PANEL_ID} .__cb_op_select {
@@ -302,9 +302,9 @@
         font-size: 11px;
         font-weight: 700;
         letter-spacing: .04em;
-        background: #fff;
+        background: #fbfaf7;
         color: ${HL_COLOR};
-        border: 1px solid #cbd5e1;
+        border: 1px solid #ddd8d0;
         border-radius: 4px;
         padding: 1px 4px;
         cursor: pointer;
@@ -313,28 +313,28 @@
 
       #${PANEL_ID} .__cb_empty {
         font-size: 12px;
-        color: #94a3b8;
+        color: #a8a29e;
         font-style: italic;
         margin-bottom: 6px;
       }
 
       #${PANEL_ID} .__cb_btn {
         font: inherit;
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        color: #1e293b;
+        background: #fbfaf7;
+        border: 1px solid #ddd8d0;
+        color: #1c1917;
         padding: 6px 12px;
-        border-radius: 6px;
+        border-radius: 4px;
         cursor: pointer;
         font-weight: 500;
       }
-      #${PANEL_ID} .__cb_btn:hover { background: #f1f5f9; }
+      #${PANEL_ID} .__cb_btn:hover { background: #f0eeea; }
       #${PANEL_ID} .__cb_btn._primary {
         background: ${HL_COLOR};
         color: #fff;
         border-color: ${HL_COLOR};
       }
-      #${PANEL_ID} .__cb_btn._primary:hover { background: #3a7bc8; }
+      #${PANEL_ID} .__cb_btn._primary:hover { background: #115e59; }
       #${PANEL_ID} .__cb_btn._danger {
         background: #ffffff;
         color: #b91c1c;
@@ -343,24 +343,22 @@
       #${PANEL_ID} .__cb_btn._danger:hover { background: #fef2f2; }
       #${PANEL_ID} .__cb_btn:disabled { opacity: .5; cursor: not-allowed; }
       #${PANEL_ID} .__cb_btn._small { padding: 4px 10px; font-size: 12px; }
-      /* Active pick mode — solid green background so it's obvious which
-         slot the user is filling. */
       #${PANEL_ID} .__cb_btn._picking {
-        background: #16a34a;
+        background: ${HL_COLOR};
         color: #ffffff;
-        border-color: #16a34a;
+        border-color: ${HL_COLOR};
         font-weight: 600;
-        box-shadow: 0 0 0 2px rgba(22,163,74,0.25);
+        box-shadow: 0 0 0 2px rgba(15,118,110,0.25);
       }
-      #${PANEL_ID} .__cb_btn._picking:hover { background: #15803d; border-color: #15803d; }
+      #${PANEL_ID} .__cb_btn._picking:hover { background: #115e59; border-color: #115e59; }
 
       #${PANEL_ID} .__cb_btn_row { display: flex; gap: 6px; }
 
       #${PANEL_ID} .__cb_preview {
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-size: 12px;
-        background: #0f172a;
-        color: #f1f5f9;
+        background: #1c1917;
+        color: #f5f4f1;
         padding: 8px 10px;
         border-radius: 6px;
         white-space: pre-wrap;
@@ -368,18 +366,18 @@
         margin-bottom: 8px;
         min-height: 38px;
       }
-      #${PANEL_ID} .__cb_preview._empty { color: #64748b; font-family: inherit; font-style: italic; }
+      #${PANEL_ID} .__cb_preview._empty { color: #a8a29e; font-family: inherit; font-style: italic; }
 
       #${PANEL_ID} .__cb_status {
         padding: 7px 12px;
-        border-top: 1px solid #e2e8f0;
+        border-top: 1px solid #ddd8d0;
         font-size: 12px;
       }
       #${PANEL_ID} .__cb_status._error { color: #b91c1c; background: #fef2f2; }
-      #${PANEL_ID} .__cb_status._info  { color: #1e40af; background: #eff6ff; }
+      #${PANEL_ID} .__cb_status._info  { color: #115e59; background: #e4f2f0; }
 
       #${PANEL_ID} .__cb_saved_item {
-        border: 1px solid #e2e8f0;
+        border: 1px solid #ddd8d0;
         border-radius: 6px;
         padding: 8px 10px;
         margin-bottom: 6px;
@@ -392,7 +390,7 @@
       }
       #${PANEL_ID} .__cb_saved_idx {
         font-size: 11px;
-        color: #64748b;
+        color: #6b6560;
         font-weight: 600;
       }
       #${PANEL_ID} .__cb_saved_formula {
@@ -402,18 +400,15 @@
       }
       #${PANEL_ID} .__cb_saved_labels {
         font-size: 11px;
-        color: #64748b;
+        color: #6b6560;
         margin-top: 4px;
       }
 
-      /* Highlight applied to the user's elements during selection mode.
-         Solid green outline + semi-transparent fill so it's very
-         obvious which element is under the cursor. */
       .__cb_highlight {
-        outline: 3px solid #16a34a !important;
+        outline: 3px solid #0f766e !important;
         outline-offset: 2px !important;
-        background-color: rgba(22,163,74,0.15) !important;
-        box-shadow: 0 0 0 4px rgba(22,163,74,0.15) !important;
+        background-color: rgba(15,118,110,0.14) !important;
+        box-shadow: 0 0 0 4px rgba(15,118,110,0.14) !important;
         transition: outline-color 0.08s, background-color 0.08s !important;
       }
 
@@ -424,12 +419,12 @@
         transition: outline-color 0.1s, background-color 0.1s !important;
       }
       .__cb_viz_hl._action {
-        outline: 3px solid #16a34a !important;
-        background-color: rgba(22,163,74,0.12) !important;
+        outline: 3px solid #0f766e !important;
+        background-color: rgba(15,118,110,0.12) !important;
       }
       .__cb_viz_hl._target {
-        outline: 3px solid #1e3a8a !important;
-        background-color: rgba(30,58,138,0.12) !important;
+        outline: 3px solid #44403c !important;
+        background-color: rgba(68,64,60,0.10) !important;
       }
 
       /* ── Detected APIs / Storage lanes ─────────────────────────────── */
@@ -438,16 +433,16 @@
         align-items: center;
         gap: 6px;
         padding: 5px 8px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #ddd8d0;
         border-radius: 5px;
         margin-bottom: 4px;
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-size: 11.5px;
-        background: #fff;
+        background: #fbfaf7;
         cursor: pointer;
         word-break: break-all;
       }
-      #${PANEL_ID} .__cb_lane_row:hover { background: #f8fafc; border-color: #cbd5e1; }
+      #${PANEL_ID} .__cb_lane_row:hover { background: #f0eeea; border-color: #c5bfb4; }
       #${PANEL_ID} .__cb_lane_row._disabled {
         opacity: .6;
         cursor: not-allowed;
@@ -462,26 +457,26 @@
         font-weight: 700;
         padding: 1px 5px;
         border-radius: 3px;
-        background: #e0e7ff;
-        color: #3730a3;
+        background: #e4f2f0;
+        color: #115e59;
         flex-shrink: 0;
       }
       #${PANEL_ID} .__cb_lane_method._GET    { background: #dcfce7; color: #166534; }
       #${PANEL_ID} .__cb_lane_method._POST   { background: #fef3c7; color: #92400e; }
-      #${PANEL_ID} .__cb_lane_method._PUT    { background: #ede9fe; color: #5b21b6; }
+      #${PANEL_ID} .__cb_lane_method._PUT    { background: #e4f2f0; color: #115e59; }
       #${PANEL_ID} .__cb_lane_method._DELETE { background: #fee2e2; color: #991b1b; }
       #${PANEL_ID} .__cb_lane_id {
-        color: #0f172a;
+        color: #1c1917;
         font-weight: 600;
       }
       #${PANEL_ID} .__cb_lane_path {
-        color: #64748b;
+        color: #6b6560;
         flex: 1;
         text-align: right;
       }
       #${PANEL_ID} .__cb_lane_note {
         font-size: 11px;
-        color: #94a3b8;
+        color: #a8a29e;
         margin: 0 0 6px 0;
         font-style: italic;
       }
@@ -502,7 +497,7 @@
     if (!panel) return;
     panel.innerHTML = `
       <div class="__cb_header" data-role="drag">
-        <span>Constraint Builder</span>
+        <span>Flowcheck</span>
         <span class="__cb_close" data-action="close" title="Close">×</span>
       </div>
       <div class="__cb_tabs">
@@ -1121,7 +1116,7 @@
     marker.setAttribute('orient', 'auto-start-reverse');
     const path = document.createElementNS(svgns, 'path');
     path.setAttribute('d', 'M0,0 L10,5 L0,10 z');
-    path.setAttribute('fill', '#1e3a8a');
+    path.setAttribute('fill', '#44403c');
     marker.appendChild(path);
     defs.appendChild(marker);
     svg.appendChild(defs);
@@ -1138,7 +1133,7 @@
       const line = document.createElementNS(svgns, 'line');
       line.setAttribute('x1', ax); line.setAttribute('y1', ay);
       line.setAttribute('x2', tx); line.setAttribute('y2', ty);
-      line.setAttribute('stroke', '#1e3a8a');
+      line.setAttribute('stroke', '#44403c');
       line.setAttribute('stroke-width', '2');
       line.setAttribute('stroke-dasharray', '6,4');
       line.setAttribute('marker-end', 'url(#__cb_viz_arrow)');
@@ -1153,7 +1148,7 @@
         label.setAttribute('font-size', '11');
         label.setAttribute('font-family', 'ui-monospace, Menlo, monospace');
         label.setAttribute('font-weight', '600');
-        label.setAttribute('fill', '#1e3a8a');
+        label.setAttribute('fill', '#44403c');
         label.setAttribute('text-anchor', 'middle');
         label.setAttribute('paint-order', 'stroke');
         label.setAttribute('stroke', '#ffffff');

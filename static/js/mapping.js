@@ -16,6 +16,24 @@ document.getElementById("go-to-mapping-btn")?.addEventListener("click", () => {
   switchTab("mapping");
 });
 
+/* ── Setup checklist ─────────────────────────────────────────────────── */
+
+document.getElementById("setup-steps")?.addEventListener("click", e => {
+  const check = e.target.closest(".setup-num");
+  if (check) {
+    const on = check.classList.toggle("is-done");
+    check.setAttribute("aria-pressed", on ? "true" : "false");
+    return;
+  }
+  const goto = e.target.closest(".setup-goto");
+  if (!goto) return;
+  switchTab(goto.dataset.tab);
+  const target = document.getElementById(goto.dataset.target);
+  if (target) {
+    requestAnimationFrame(() => target.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+});
+
 /* ── Element list scan ─────────────────────────────────────────────────── */
 
 const scanSourceInput = document.getElementById("scan-source-input");

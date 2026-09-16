@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Constraint Parser</title>
+  <title>Flowcheck</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" />
+        href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
   <link rel="stylesheet" href="/static/css/style.css" />
 </head>
 <body>
@@ -14,19 +14,53 @@
 
   <!-- Header -->
   <header class="page-header">
-    <h1>Constraint <span>Verification</span></h1>
-    <p>Parse constraints and manage the element mapping for your target app.</p>
+    <p class="brand">Flowcheck</p>
+    <h1>Constraint verification</h1>
+    <p>Author constraints on a running app, then verify them statically.</p>
   </header>
 
   <!-- Tab nav -->
   <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="parser">Parser</button>
-    <button class="tab-btn" data-tab="mapping">Element Mapping</button>
+    <button class="tab-btn" data-tab="parser">Parser</button>
+    <button class="tab-btn active" data-tab="mapping">Element Mapping</button>
     <button class="tab-btn" data-tab="builder">Visual Builder</button>
   </nav>
 
+  <ol class="setup-steps" id="setup-steps" aria-label="Setup checklist">
+    <li class="setup-step">
+      <button type="button" class="setup-num" data-n="1" aria-pressed="false" aria-label="Toggle step 1"></button>
+      <button type="button" class="setup-goto" data-tab="mapping" data-target="card-inject">
+        <span class="setup-text"><strong>Inject IDs</strong> into the app source</span>
+      </button>
+    </li>
+    <li class="setup-step">
+      <button type="button" class="setup-num" data-n="2" aria-pressed="false" aria-label="Toggle step 2"></button>
+      <button type="button" class="setup-goto" data-tab="mapping" data-target="card-scan">
+        <span class="setup-text"><strong>Refresh the element list</strong></span>
+      </button>
+    </li>
+    <li class="setup-step">
+      <button type="button" class="setup-num" data-n="3" aria-pressed="false" aria-label="Toggle step 3"></button>
+      <button type="button" class="setup-goto" data-tab="mapping" data-target="card-db">
+        <span class="setup-text"><strong>Build the CodeQL database</strong></span>
+      </button>
+    </li>
+    <li class="setup-step">
+      <button type="button" class="setup-num" data-n="4" aria-pressed="false" aria-label="Toggle step 4"></button>
+      <button type="button" class="setup-goto" data-tab="builder" data-target="card-preview">
+        <span class="setup-text"><strong>Open preview</strong> and pick action → targets</span>
+      </button>
+    </li>
+    <li class="setup-step">
+      <button type="button" class="setup-num" data-n="5" aria-pressed="false" aria-label="Toggle step 5"></button>
+      <button type="button" class="setup-goto" data-tab="parser" data-target="constraint-input">
+        <span class="setup-text"><strong>Send to app</strong>, then parse / run checks</span>
+      </button>
+    </li>
+  </ol>
+
   <!-- ── Parser tab ── -->
-  <div id="tab-parser" class="tab-panel">
+  <div id="tab-parser" class="tab-panel hidden">
 
   <!-- Input card -->
   <div class="card">
@@ -210,10 +244,10 @@
   </div><!-- /tab-parser -->
 
   <!-- ── Mapping tab ── -->
-  <div id="tab-mapping" class="tab-panel hidden">
+  <div id="tab-mapping" class="tab-panel">
 
     <!-- Step 0: inject IDs -->
-    <div class="card">
+    <div class="card" id="card-inject">
       <div class="card-title">Inject IDs into source</div>
       <p class="mapping-intro">
         Add stable IDs (<code>cv_0001</code>, <code>cv_0002</code>, …) to every UI
@@ -240,7 +274,7 @@
     </div>
 
     <!-- Step 1: scan source for ids -->
-    <div class="card">
+    <div class="card" id="card-scan">
       <div class="card-title">Element list</div>
       <p class="mapping-intro">
         Walk the same source path and list every DOM id (with its derived label).
@@ -265,14 +299,14 @@
     </div>
 
     <!-- Step 2: build the CodeQL database for static checks -->
-    <div class="card">
+    <div class="card" id="card-db">
       <div class="card-title">Build CodeQL database</div>
       <p class="mapping-intro">
-        Indexes the same source into a CodeQL database so Step 6 (Static
-        Analysis) can run queries against it. Required before any static
-        check; safe to re-run after you change the source. Building also
-        switches <code>/run/</code> to serve this source so the constraint
-        builder iframe and the new DB stay in sync.
+        Indexes the same source into a CodeQL database so static analysis
+        can run queries against it. Required before any static check; safe
+        to re-run after you change the source. Building also switches
+        <code>/run/</code> to serve this source so preview and the DB stay
+        in sync.
       </p>
 
       <div class="input-row" style="margin-top:1rem;">
@@ -309,12 +343,11 @@
   <!-- ── Visual Builder tab ── -->
   <div id="tab-builder" class="tab-panel hidden">
 
-    <div class="card">
+    <div class="card" id="card-preview">
       <div class="card-title">Open your app with the overlay</div>
       <p class="mapping-intro">
         We serve your app at <code>/preview/...</code> and auto-inject the
-        constraint-builder overlay. Make sure you've already run
-        <strong>Inject IDs into source</strong> on the same path.
+        overlay. Finish steps 1–3 on Element Mapping first (same source path).
       </p>
 
       <div class="input-row" style="margin-top:1rem;">

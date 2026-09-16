@@ -116,6 +116,19 @@ def _check_probability(ast: dict, issues: list[SemanticIssue]) -> None:
     if p < 0 or p > 1:
         issues.append(SemanticIssue(
             "E006", f"Probability {p} must be in [0, 1]."))
+        return
+    # The static checker only decides the two endpoints of the probability
+    # axis. P = 1 routes to the universal branch (behaviour must hold on
+    # every handler path); P = 0 routes to the absence branch (behaviour
+    # must never occur). Intermediate probabilities have no sound static
+    # reading — reject them explicitly rather than silently coercing.
+    if p != 0 and p != 1:
+        issues.append(SemanticIssue(
+            "E006",
+            f"Probability {p} is not statically decidable — the checker "
+            f"supports only P = 0 (event must not occur) and P = 1 "
+            f"(event must occur on every path). Intermediate probabilities "
+            f"are future work (runtime tracing)."))
 
 
 def _check_condition_side(condition: Any, issues: list[SemanticIssue]) -> None:

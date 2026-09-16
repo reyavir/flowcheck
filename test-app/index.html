@@ -107,10 +107,10 @@
      e.target.dataset.del — a constraint
      P(w(del-count) | A(del-btn-a)) = 1 should now PASS via the
      registeredViaBodyDelegation predicate. -->
-<div class="del-panel">
-<button id="del-btn-a" data-del="a">Delegated A</button>
-<button id="del-btn-b" data-del="b">Delegated B</button>
-<span id="del-count">0</span>
+<div class="del-panel" data-cv-label="Delegated A Delegated B 0" id="cv_0020">
+<button data-cv-label="Delegated A" data-del="a" id="del-btn-a">Delegated A</button>
+<button data-cv-label="Delegated B" data-del="b" id="del-btn-b">Delegated B</button>
+<span data-cv-label="0" id="del-count">0</span>
 </div>
 <!-- Class-binding fixture for selector-action constraints. The render
      button populates a list with cards each bearing class="tile". After

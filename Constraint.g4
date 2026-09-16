@@ -1,6 +1,6 @@
 grammar Constraint;
 
-// ── entry point ──────────────────────────────────────────────────────────────
+// ── entry point ────────────
 
 constraint
     : prob_constraint EOF
@@ -37,7 +37,7 @@ logic_factor
     | atom
     ;
 
-// ── atoms ────────────────────────────────────────────────────────────────────
+// ── atoms ──────────────────
 
 atom
     : write_event
@@ -48,16 +48,10 @@ atom
     | literal_bool
     ;
 
-// Three write-event forms:
-//   w(target)                            — existence only, no value claim
-//   w(target, expr)                      — value derives from an expression
-//                                          (arithmetic shape, e.g. r(x) + 1)
-//   w(target, sources={r(s1), r(s2)})    — value derives from EXACTLY this
-//                                          set of element reads (set
-//                                          equality — no extras, no
-//                                          missing). Empty set { } means
-//                                          "no element sources" (literal
-//                                          or api-only value).
+// Three w() forms:
+//   w(t)              — existence only
+//   w(t, expr)        — value from expr
+//   w(t, sources={…}) — value from exact set
 write_event
     : 'w(' identifier ')'
     | 'w(' identifier ',' expr ')'
@@ -83,14 +77,11 @@ system_event
     | 'call(' identifier ',' expr ')'
     ;
 
-// `persist(storage_target)` — true iff the action handler writes to the
-// named storage AND a page-load handler reads from that same storage.
-// Sugar for the conjunction of save and restore checks.
 persist_event
     : 'persist(' identifier ')'
     ;
 
-// ── expressions (for values and guards) ──────────────────────────────────────
+// ── expressions ────────────
 
 guard
     : expr comparator expr
@@ -122,7 +113,7 @@ atom_expr
     | literal
     ;
 
-// ── terminals ────────────────────────────────────────────────────────────────
+// ── terminals ──────────────
 
 identifier : IDENTIFIER ;
 comparator : '=' | '!=' | '<' | '>' | '<=' | '>=' ;
@@ -130,7 +121,7 @@ range      : '[' NUMBER ',' NUMBER ']' | 'D' ;
 literal    : NUMBER | STRING | 'null' ;
 literal_bool : TRUE | FALSE ;
 
-// ── lexer rules ──────────────────────────────────────────────────────────────
+// ── lexer rules ────────────
 
 NOT   : '¬' | '!' | 'NOT' ;
 AND   : '∧' | '&&' | 'AND' ;
