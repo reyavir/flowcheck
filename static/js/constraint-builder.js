@@ -11,10 +11,11 @@
  *      a dashed outline; clicking captures `e.target.id`.
  *   2. Click "+ Add target" → pick one or more elements that should change
  *      as a result of the action.
- *   3. Click "Save constraint" → the constraint string
- *        P(w(target1) AND w(target2) … | A(action)) = 1
+ *   3. Pick "How often" (always = 1, never = 0, or a custom probability).
+ *   4. Click "Save constraint" → the constraint string
+ *        P(w(target1) AND w(target2) … | A(action)) = p
  *      is built automatically and appended to the saved list.
- *   4. Switch to the Review tab and click "Export JSON" to download every
+ *   5. Switch to the Review tab and click "Export JSON" to download every
  *      saved constraint along with its human-readable labels.
  *
  * Element IDs (e.g. `cv_0001`) are required on every clickable element —
@@ -41,7 +42,11 @@
   // ── Constants ─────────────────────────────────────────────────────────
   const PANEL_ID    = '__constraint_builder_panel';
   const STYLE_ID    = '__constraint_builder_styles';
-  const STORAGE_KEY = '__constraint_builder_saved';
+  // Every preview is served from the same origin, so scope saved constraints
+  // by the previewed app's ?source= dir. Without a source (standalone test
+  // page) the original unscoped key is kept.
+  const SOURCE      = new URLSearchParams(window.location.search).get('source') || '';
+  const STORAGE_KEY = '__constraint_builder_saved' + (SOURCE ? ':' + SOURCE : '');
   const HL_COLOR    = '#0f766e';
   const LABEL_MAX   = 25;
 
@@ -49,6 +54,8 @@
   const state = {
     action:       null,     // { id, label } | null
     targets:      [],       // [{ id, label, op, kind }]   kind: "ui" | "api"
+    probMode:     'always', // 'always' (=1) | 'never' (=0) | 'custom'
+    probCustom:   '0.9',    // raw text of the custom probability input
     saved:        [],       // [{ constraint, action, targets, created_at }]
     mode:         'build',  // 'build' | 'review'
     status:       null,     // { kind: 'error' | 'info', text }
@@ -122,14 +129,27 @@
     }
   }
 
-  function buildConstraint(actionId, targets) {
+  // Resolve the probability picker to the number emitted after `=`.
+  // Returns null when the custom input isn't a valid value in [0, 1] —
+  // the grammar's NUMBER token is unsigned digits with an optional fraction.
+  function currentProbability() {
+    if (state.probMode === 'always') return '1';
+    if (state.probMode === 'never')  return '0';
+    const raw = String(state.probCustom == null ? '' : state.probCustom).trim();
+    if (!/^[0-9]+(\.[0-9]+)?$/.test(raw)) return null;
+    const n = Number(raw);
+    return (n >= 0 && n <= 1) ? raw : null;
+  }
+
+  function buildConstraint(actionId, targets, prob) {
     if (!actionId || targets.length === 0) return null;
+    if (prob == null) return null;
     let writes = targetFormula(targets[0]);
     for (let i = 1; i < targets.length; i++) {
       const op = targets[i].op || 'AND';
       writes = `${writes} ${op} ${targetFormula(targets[i])}`;
     }
-    return `P(${writes} | A(${actionId})) = 1`;
+    return `P(${writes} | A(${actionId})) = ${prob}`;
   }
 
   // ── Styles (scoped to the panel) ──────────────────────────────────────
@@ -310,6 +330,29 @@
         cursor: pointer;
       }
       #${PANEL_ID} .__cb_op_select:hover { border-color: ${HL_COLOR}; }
+
+      #${PANEL_ID} .__cb_prob_row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      #${PANEL_ID} .__cb_prob_select {
+        font: inherit;
+        background: #fbfaf7;
+        border: 1px solid #ddd8d0;
+        border-radius: 4px;
+        padding: 4px 6px;
+        cursor: pointer;
+      }
+      #${PANEL_ID} .__cb_prob_input {
+        font: inherit;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        width: 70px;
+        border: 1px solid #ddd8d0;
+        border-radius: 4px;
+        padding: 4px 6px;
+      }
+      #${PANEL_ID} .__cb_prob_input._invalid { border-color: #fca5a5; background: #fef2f2; }
 
       #${PANEL_ID} .__cb_empty {
         font-size: 12px;
@@ -523,6 +566,12 @@
   // the input retains focus.
   function onPanelInput(e) {
     if (e.target.tagName !== 'INPUT') return;
+    if (e.target.dataset.action === 'change_prob_custom') {
+      state.probCustom = e.target.value;
+      e.target.classList.toggle('_invalid', currentProbability() == null);
+      renderPreviewOnly();
+      return;
+    }
     if (e.target.dataset.action !== 'change_literal') return;
     const idx = Number(e.target.dataset.idx);
     const t = state.targets[idx];
@@ -534,7 +583,8 @@
   function renderBuild() {
     const a  = state.action;
     const ts = state.targets;
-    const preview = buildConstraint(a && a.id, ts);
+    const prob = currentProbability();
+    const preview = buildConstraint(a && a.id, ts, prob);
 
     const actionRow = a
       ? `<div class="__cb_chip">
@@ -558,10 +608,15 @@
           ${renderTargetBlock(t, i)}`).join('')
       : `<div class="__cb_empty">No targets yet — pick something that should update.</div>`;
 
-    const canSave = !!(a && ts.length);
+    const canSave = !!preview;
     const previewBlock = preview
       ? `<div class="__cb_preview">${escapeHtml(preview)}</div>`
-      : `<div class="__cb_preview _empty">Pick an action and at least one target to see the preview.</div>`;
+      : `<div class="__cb_preview _empty">${escapeHtml(previewHint())}</div>`;
+    const probCustomInput = state.probMode === 'custom'
+      ? `<input class="__cb_prob_input${prob == null ? ' _invalid' : ''}"
+                data-action="change_prob_custom" type="text" inputmode="decimal"
+                placeholder="0–1" value="${escapeAttr(state.probCustom)}"/>`
+      : '';
 
     const selecting = state.selecting;
     return `
@@ -587,6 +642,21 @@
             ${state.pickingKind === 'target' ? 'Selecting target…' : '+ Add target'}
           </button>
         </div>
+      </div>
+
+      <div class="__cb_section">
+        <div class="__cb_section_label">How often</div>
+        <div class="__cb_prob_row">
+          <select class="__cb_prob_select" data-action="change_prob_mode">
+            <option value="always" ${state.probMode === 'always' ? 'selected' : ''}>Always (1)</option>
+            <option value="never"  ${state.probMode === 'never'  ? 'selected' : ''}>Never (0)</option>
+            <option value="custom" ${state.probMode === 'custom' ? 'selected' : ''}>Custom probability…</option>
+          </select>
+          ${probCustomInput}
+        </div>
+        ${state.probMode === 'custom'
+          ? '<p class="__cb_lane_note" style="margin-top:6px;">(note: not supported yet, but we hope to add it soon)</p>'
+          : ''}
       </div>
 
       <div class="__cb_section">
@@ -761,6 +831,11 @@
   function onPanelChange(e) {
     const action = e.target.dataset && e.target.dataset.action;
     if (!action) return;
+    if (action === 'change_prob_mode') {
+      state.probMode = e.target.value;
+      render();
+      return;
+    }
     const idx = Number(e.target.dataset.idx);
     const t   = state.targets[idx];
 
@@ -788,13 +863,20 @@
     }
   }
 
+  function previewHint() {
+    if (!state.action || state.targets.length === 0) {
+      return 'Pick an action and at least one target to see the preview.';
+    }
+    return 'Enter a probability between 0 and 1 (e.g. 0.9).';
+  }
+
   // Lightweight preview update — only re-renders the preview block + the
   // save button enabled-state. Avoids losing focus on the literal text input.
   function renderPreviewOnly() {
     if (!panel) return;
     const a = state.action;
     const ts = state.targets;
-    const preview = buildConstraint(a && a.id, ts);
+    const preview = buildConstraint(a && a.id, ts, currentProbability());
     const block = panel.querySelector('.__cb_preview');
     if (!block) return;
     if (preview) {
@@ -802,8 +884,10 @@
       block.textContent = preview;
     } else {
       block.classList.add('_empty');
-      block.textContent = 'Pick an action and at least one target to see the preview.';
+      block.textContent = previewHint();
     }
+    const saveBtn = panel.querySelector('[data-action="save"]');
+    if (saveBtn) saveBtn.disabled = !preview;
   }
 
   function onPanelClick(e) {
@@ -950,13 +1034,17 @@
   function saveConstraint() {
     const a  = state.action;
     const ts = state.targets;
-    const formula = buildConstraint(a && a.id, ts);
+    const prob = currentProbability();
+    const formula = buildConstraint(a && a.id, ts, prob);
     if (!formula) {
-      setStatus('error', 'Pick an action and at least one target before saving.');
+      setStatus('error', (a && ts.length && prob == null)
+        ? 'Probability must be a number between 0 and 1.'
+        : 'Pick an action and at least one target before saving.');
       return;
     }
     state.saved.push({
       constraint: formula,
+      probability: Number(prob),
       action:     { id: a.id, label: a.label },
       targets:    ts.map(t => ({ id: t.id, label: t.label, op: t.op || null })),
       created_at: new Date().toISOString(),
@@ -964,6 +1052,7 @@
     persist();
     state.action  = null;
     state.targets = [];
+    state.probMode = 'always';
     setStatus('info', 'Saved. Switch to Review to see all constraints.');
   }
 
